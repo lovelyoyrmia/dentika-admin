@@ -7,4 +7,5 @@ export const ROUTES = {
   RESET_PASSWORD: "/reset-password",
   REGISTRATION: "/registration",
   EDIT_PROFILE: "/edit-profile",
+  SHOW_PATIENT: "patient/:id",
 };

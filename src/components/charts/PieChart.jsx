@@ -2,13 +2,11 @@ import React from "react";
 import {
   PieChart,
   Pie,
-  Sector,
   Cell,
   ResponsiveContainer,
   Legend,
   Tooltip,
 } from "recharts";
-import { CustomTooltip } from "./BarChart";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -20,7 +18,7 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-  index,
+  _,
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);

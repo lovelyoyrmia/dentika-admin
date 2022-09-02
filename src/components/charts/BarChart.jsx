@@ -12,15 +12,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const getIntroOfPage = (label) => {
-  switch (label) {
-    case "MALE / PRIA":
-      return "MALE / PRIA";
-    case "FEMALE / WANITA":
-      return "FEMALE / WANITA";
-  }
-};
-
 export const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (

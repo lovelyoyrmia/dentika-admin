@@ -50,14 +50,14 @@ export const getCountData = (patients, array2, keys) => {
     array2.map((arr) => {
       let count = 0;
       let data = {};
-      patients.map((patient) => {
+      patients.forEach((patient) => {
         if (patient[keys] === arr) {
           count++;
         }
       });
       data[keys] = count;
       data["name"] = arr;
-      newArr.push(data);
+      return newArr.push(data);
     });
   }
   return newArr;
@@ -74,7 +74,7 @@ export const getCountDate = (patients) => {
     });
     patients.map((patient) => {
       let date = patient.created_at.split(",")[0];
-      dateArr.push(date);
+      return dateArr.push(date);
     });
 
     if (dateArr.length !== 0) {
@@ -98,7 +98,7 @@ export const getVerifiedPatients = (patients) => {
       const index = arr.findIndex((find) => {
         return find.is_verified === patient.is_verified;
       });
-      index === -1 ? arr.push(data) : (arr[index].value += 1);
+      return index === -1 ? arr.push(data) : (arr[index].value += 1);
     });
   }
   return arr;

@@ -139,12 +139,6 @@ export default function PatientForm({ patient }) {
           data
         );
         if (res.data["message"] === "Success") {
-          console.log(res.data);
-          // localStorage.setItem("data", JSON.stringify(res.data["data"]));
-          // socket.emit("sendNotification", {
-          //   senderId: res.data["data"]["uid"],
-          //   result: res.data["data"],
-          // });
           setDefault();
           toast.success("Edit Successfully !", {
             position: "top-right",
@@ -195,7 +189,6 @@ export default function PatientForm({ patient }) {
         setAuthToken(patientAxios, token);
         const res = await patientAxios.post("/addData", data);
         if (res.data["message"] === "Success") {
-          console.log(res.data);
           setDefault();
           toast.success("Added Successfully !", {
             position: "top-right",

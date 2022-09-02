@@ -12,6 +12,7 @@ import Home from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import PageNotFound from "./pages/PageNotFound";
 import ProtectedRoute from "./services/ProtectedRoute";
+import PatientProfile from "./components/patients/PatientProfile";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                   />
                 );
               })}
+              <Route path={ROUTES.SHOW_PATIENT} element={<PatientProfile />} />
             </Route>
           </Route>
 

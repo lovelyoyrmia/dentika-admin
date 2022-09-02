@@ -11,7 +11,6 @@ import {
   Dialog,
   DialogTitle,
   IconButton,
-  Paper,
 } from "@mui/material";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import TablePatients from "./TablePatients";
@@ -32,10 +31,13 @@ import {
   getVerifiedPatients,
 } from "../../utils/utils";
 import PatientCharts from "./PatientCharts";
+import PatientsPagination from "./PatientsPagination";
 
 export default function Patients() {
   const { currentUser } = useAuth();
   const [patients, setPatients] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [patientsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
@@ -118,6 +120,7 @@ export default function Patients() {
         ADMIN: ROLE.admin,
       },
     };
+    setLoading(true);
     adminAxios
       .post("/deleteUser/" + id, req)
       .then((res) => {
@@ -131,17 +134,38 @@ export default function Patients() {
       });
   };
 
+  const tableRef = useRef();
   const dataVerified = getVerifiedPatients(patients);
   const columns = getColumns(patients);
   const dataGender = getCountData(patients, GENDER, "gender");
   const dataBlood = getCountData(patients, BLOOD, "blood");
+  const dataDate = getCountDate(patients);
   const dataMaritalStatus = getCountData(
     patients,
     MARITAL_STATUS,
     "marital_status"
   );
-  const dataDate = getCountDate(patients);
-  const tableRef = useRef();
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+  const currentPatients =
+    patients.length !== 0 && !error
+      ? patients.filter((patient) => {
+          return patient.is_verified === false;
+        }).length !== 0
+        ? patients
+            .filter((patient) => {
+              return patient.is_verified === false;
+            })
+            .slice(indexOfFirstPatient, indexOfLastPatient)
+        : patients
+            .filter((patient) => {
+              return patient.is_verified === true;
+            })
+            .slice(indexOfFirstPatient, indexOfLastPatient)
+      : patients.length;
+  const handleChangePage = (event, value) => {
+    setCurrentPage(value);
+  };
 
   const { exportToExcel } = useDownloadExcel({
     currentTableRef: tableRef.current,
@@ -208,25 +232,33 @@ export default function Patients() {
             }}
           >
             {!loading ? (
-              patients.length !== 0 && !error ? (
+              currentPatients !== 0 && !error ? (
                 <Box>
                   <PatientList
-                    patients={
-                      patients.filter((patient) => {
-                        return patient.is_verified === false;
-                      }).length !== 0
-                        ? patients.filter((patient) => {
-                            return patient.is_verified === false;
-                          })
-                        : patients.filter((patient) => {
-                            return patient.is_verified === true;
-                          })
-                    }
+                    patients={currentPatients}
                     updateVerified={updateVerifiedPatient}
                     deleteUnverified={deleteUnverified}
                   />
-                  <Box sx={{ mt: 3, textAlign: "start" }}>
-                    <Paper elevation={5} sx={{ p: 2 }}>
+                  <Box
+                    sx={{ mt: 3, display: "flex", justifyContent: "center" }}
+                  >
+                    <PatientsPagination
+                      patientsPerPage={patientsPerPage}
+                      totalPatients={
+                        patients.filter((patient) => {
+                          return patient.is_verified === false;
+                        }).length !== 0
+                          ? patients.filter((patient) => {
+                              return patient.is_verified === false;
+                            }).length
+                          : patients.filter((patient) => {
+                              return patient.is_verified === true;
+                            }).length
+                      }
+                      page={currentPage}
+                      handleChangePage={handleChangePage}
+                    />
+                    {/* <Paper elevation={5} sx={{ p: 2 }}>
                       <Box component="h4">
                         {patients.length} Registered Patients
                       </Box>
@@ -250,7 +282,7 @@ export default function Patients() {
                           : "No Verified"}{" "}
                         Patients
                       </Box>
-                    </Paper>
+                    </Paper> */}
                   </Box>
                 </Box>
               ) : (

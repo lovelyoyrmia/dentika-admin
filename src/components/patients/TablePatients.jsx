@@ -1,13 +1,11 @@
 import React from "react";
 import {
   Box,
-  CircularProgress,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Alert,
 } from "@mui/material";
 
 export default function TablePatients({
