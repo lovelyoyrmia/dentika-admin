@@ -160,7 +160,7 @@ export default function PatientList({
                 <Popper
                   open={open}
                   anchorEl={anchorRef.current}
-                  role={undefined}
+                  // role={undefined}
                   placement="bottom-start"
                   transition
                   disablePortal

@@ -12,7 +12,7 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import { useDownloadExcel } from "react-export-table-to-excel";
+import { useDownloadExcel, downloadExcel } from "react-export-table-to-excel";
 import TablePatients from "./TablePatients";
 import {
   BLOOD,
@@ -67,6 +67,7 @@ export default function Patients() {
       .catch((error) => {
         setError(true);
         setLoading(false);
+        setPatients(null);
       });
   }, [currentUser.email]);
 
@@ -358,7 +359,11 @@ export default function Patients() {
             Table of Patients
           </Box>
 
-          <Button variant="contained" disabled={error} onClick={exportToExcel}>
+          <Button
+            variant="contained"
+            disabled={error}
+            onClick={() => exportToExcel()}
+          >
             Export Data
           </Button>
         </Box>
