@@ -8,7 +8,7 @@ import { AuthProvider } from "./services/FirebaseAuthContext";
 import { ROUTES } from "./constant/routes";
 // import NavbarWrapper from "./components/navbar/NavbarWrapper";
 import { ListSidebar } from "./constant/constants";
-import Home from "./pages/Dashboard";
+import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import PageNotFound from "./pages/PageNotFound";
 import ProtectedRoute from "./services/ProtectedRoute";

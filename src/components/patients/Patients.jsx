@@ -10,6 +10,7 @@ import {
   DialogContent,
   Dialog,
   DialogTitle,
+  DialogActions,
   IconButton,
 } from "@mui/material";
 import { useDownloadExcel, downloadExcel } from "react-export-table-to-excel";
@@ -29,6 +30,7 @@ import {
   getCountData,
   getCountDate,
   getVerifiedPatients,
+  getColumns,
 } from "../../utils/utils";
 import PatientCharts from "./PatientCharts";
 import PatientsPagination from "./PatientsPagination";
@@ -40,6 +42,7 @@ export default function Patients() {
   const [patientsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [serverError, setServerError] = useState(false);
   const [open, setOpen] = useState(false);
 
   const getAllPatients = useCallback(() => {
@@ -67,6 +70,7 @@ export default function Patients() {
       .catch((error) => {
         setError(true);
         setLoading(false);
+        setServerError(true);
         setPatients(null);
       });
   }, [currentUser.email]);
@@ -78,20 +82,6 @@ export default function Patients() {
       clearTimeout(interval);
     };
   }, [getAllPatients]);
-
-  const getColumns = (patients) => {
-    let columns = [];
-    if (patients.length !== 0) {
-      for (const key of newKeys) {
-        let data = {};
-        data["id"] = key;
-        data["label"] = key.replace(/_/g, " ").toUpperCase();
-        data["minWidth"] = 170;
-        columns.push(data);
-      }
-    }
-    return columns;
-  };
 
   const updateVerifiedPatient = (id) => {
     const req = {
@@ -110,6 +100,7 @@ export default function Patients() {
       })
       .catch((error) => {
         setLoading(false);
+        setServerError(true);
         setError(true);
       });
   };
@@ -137,7 +128,7 @@ export default function Patients() {
 
   const tableRef = useRef();
   const dataVerified = getVerifiedPatients(patients);
-  const columns = getColumns(patients);
+  const columns = getColumns(patients, newKeys);
   const dataGender = getCountData(patients, GENDER, "gender");
   const dataBlood = getCountData(patients, BLOOD, "blood");
   const dataDate = getCountDate(patients);
@@ -149,7 +140,7 @@ export default function Patients() {
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients =
-    patients.length !== 0 && !error
+    patients != null && !error
       ? patients.filter((patient) => {
           return patient.is_verified === false;
         }).length !== 0
@@ -163,7 +154,7 @@ export default function Patients() {
               return patient.is_verified === true;
             })
             .slice(indexOfFirstPatient, indexOfLastPatient)
-      : patients.length;
+      : patients;
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
   };
@@ -193,8 +184,8 @@ export default function Patients() {
                 Patients
               </Box>
               <Box sx={{ color: "gray" }}>
-                {patients.length !== 0 ? patients.length : "No"}{" "}
-                {patients.length > 1
+                {patients != null ? patients.length : "No"}{" "}
+                {patients != null && patients.length > 1
                   ? "registered patients"
                   : "registered patient"}
                 {dataVerified.filter((patient) => patient.is_verified === false)
@@ -208,7 +199,7 @@ export default function Patients() {
               </Box>
             </Box>
             <Box>
-              <IconButton onClick={getAllPatients}>
+              <IconButton onClick={getAllPatients} disabled={error}>
                 <ReplayIcon />
               </IconButton>
               <Button
@@ -218,6 +209,7 @@ export default function Patients() {
                   setOpen(true);
                 }}
                 sx={{ ml: 2 }}
+                disabled={error}
               >
                 Add Patient
               </Button>
@@ -233,7 +225,7 @@ export default function Patients() {
             }}
           >
             {!loading ? (
-              currentPatients !== 0 && !error ? (
+              currentPatients != null ? (
                 <Box>
                   <PatientList
                     patients={currentPatients}
@@ -314,7 +306,7 @@ export default function Patients() {
           }}
         >
           {!loading ? (
-            patients.length !== 0 && !error ? (
+            patients != null && !error ? (
               <PatientCharts
                 dataBlood={dataBlood}
                 dataGender={dataGender}
@@ -377,7 +369,7 @@ export default function Patients() {
           }}
         >
           {!loading ? (
-            patients.length !== 0 && !error ? (
+            patients != null && !error ? (
               <TablePatients
                 tableRef={tableRef}
                 columns={columns}
@@ -429,6 +421,14 @@ export default function Patients() {
         <DialogContent>
           <PatientForm />
         </DialogContent>
+      </Dialog>
+      <Dialog open={serverError}>
+        <DialogTitle>Server Error</DialogTitle>
+        <DialogContent>Could not connect to server</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setServerError(false)}>Cancel</Button>
+          <Button onClick={() => window.location.reload(false)}>Refresh</Button>
+        </DialogActions>
       </Dialog>
     </>
   );

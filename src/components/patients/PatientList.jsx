@@ -83,11 +83,12 @@ export default function PatientList({
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar src={patient.image_url} />
+              <Avatar src={patient.image_url} alt="Photo" />
               <Box
                 sx={{
                   ml: 3,
                   width: "250px",
+                  cursor: "default",
                 }}
                 component="div"
                 onClick={() =>

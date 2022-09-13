@@ -46,7 +46,7 @@ export const randomId = (lenStr) => {
 
 export const getCountData = (patients, array2, keys) => {
   let newArr = [];
-  if (patients.length !== 0) {
+  if (patients !== null) {
     array2.map((arr) => {
       let count = 0;
       let data = {};
@@ -65,7 +65,7 @@ export const getCountData = (patients, array2, keys) => {
 
 export const getCountDate = (patients) => {
   let arr = [];
-  if (patients.length !== 0) {
+  if (patients != null) {
     let dateArr = [];
     patients.sort((a, b) => {
       const date1 = new Date(a.created_at);
@@ -90,9 +90,23 @@ export const getCountDate = (patients) => {
   return arr;
 };
 
+export const getColumns = (patients,newKeys) => {
+  let columns = [];
+  if (patients != null) {
+    for (const key of newKeys) {
+      let data = {};
+      data["id"] = key;
+      data["label"] = key.replace(/_/g, " ").toUpperCase();
+      data["minWidth"] = 170;
+      columns.push(data);
+    }
+  }
+  return columns;
+};
+
 export const getVerifiedPatients = (patients) => {
   let arr = [];
-  if (patients.length !== 0) {
+  if (patients != null) {
     patients.map((patient) => {
       let data = { is_verified: patient.is_verified, value: 1 };
       const index = arr.findIndex((find) => {
